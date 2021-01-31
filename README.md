@@ -122,6 +122,6 @@ minikube service mongo-express-service
 ```
 Mongo express running on kubernetes 
 
-![Optional Text](./image/OAuth Flow.png)
+![Optional Text](image/OAuth-Flow.png)
 
 ![Optional Text](./image/mongo-express.png)
