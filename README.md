@@ -49,7 +49,7 @@ Deploy mongo and mongo express into Kubernetes and basic understanding of Kubern
   - _kube-proxy_:
   - _RunTime container like docker/rkt_ : conainer runtime need to install very node,
 
-![Optional Text](./image/OAuth Flow.png)
+
 
 
 ```commandline
@@ -121,4 +121,5 @@ URL to external service in minikube
 minikube service mongo-express-service
 ```
 Mongo express running on kubernetes 
+![Optional Text](./image/OAuth Flow.png)
 ![Optional Text](./image/mongo-express.png)
