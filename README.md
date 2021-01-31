@@ -116,7 +116,6 @@ kubectl describe pod mongodb-deployment-xxxxxx
 kubectl describe service mongodb-service
 kubectl logs mongo-express-xxxxxx
 ```
-
 URL to external service in minikube
 ```commandline
 minikube service mongo-express-service
