@@ -121,3 +121,5 @@ URL to external service in minikube
 ```commandline
 minikube service mongo-express-service
 ```
+Mongo express running on kubernetes 
+![Optional Text](./image/mongo-express.png)
