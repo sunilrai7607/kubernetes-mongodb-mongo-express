@@ -45,6 +45,7 @@ Deploy mongo and mongo express into Kubernetes and basic understanding of Kubern
   - _Kubectl_: 
   > Interacts with both - the runtime container and node. It give instruction to continer runtime to pull image from docker and run into pod.
   - _kube-proxy_: 
+  > is responsible for implementing a form of virtual IP for Services of type other than ExternalName
   > Node to Node communication. Manages network connectivity and maintains network rules across nodes. Implements the Kubernetes Service concept across every node in a given cluster.
   - _RunTime container like docker/rkt_: 
   > Container runtime need to install very node,
@@ -124,3 +125,46 @@ Mongo express running on kubernetes
 ![Optional Text](image/OAuth-Flow.png)
 
 ![Optional Text](./image/mongo-express.png)
+
+What is Service in kubernetes ?
+> An abstract way to expose an application running on a set of Pods as a network service
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  type: ClusterIP/NodePort/LoadBalancer/ExternalName
+  selector:
+    app: MyApp
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 9376
+      # Optional field - LoadBalancer
+      # By default and for convenience, the Kubernetes control plane will allocate a port from a range (default: 30000-32767)
+      nodePort: 30007
+```
+```markdown
+Note: A Service can map any incoming port to a targetPort. By default and for convenience, the targetPort is set to the same value as the port field.
+```
+### Kubernetes ServiceTypes:
+Kubernetes ServiceTypes allow you to specify what kind of Service you want. The default is ClusterIP.
+- **ClusterIP:** 
+    > Exposes the Service on a cluster-internal IP. Choosing this value makes the Service only reachable from within the cluster. This is the default ServiceType.
+- **NodePort:** 
+    > Exposes the Service on each Node's IP at a static port (the NodePort). A ClusterIP Service, to which the NodePort Service routes, is automatically created. You'll be able to contact the NodePort Service, from outside the cluster, 
+      by requesting _"NodeIP:NodePort"_      
+- **LoadBalancer:** 
+    > Exposes the Service externally using a cloud provider's load balancer. NodePort and ClusterIP Services, to which the external load balancer routes, are automatically created.
+- **ExternalName:** 
+    > Maps the Service to the contents of the externalName field (e.g. foo.bar.example.com), by returning a CNAME record with its value. No proxying of any kind is set up.
+
+### Kubernetes Ingress vs OpenShift Route
+Although pods and services have their own IP addresses on Kubernetes, these IP addresses are only reachable within the Kubernetes cluster and not accessible to the outside clients. The Ingress object in Kubernetes, although still in beta, is designed to signal the Kubernetes platform that a certain service needs to be accessible to the outside world and it contains the configuration needed such as an externally-reachable URL, SSL, and more.
+
+Creating an ingress object should not have any effects on its own and requires an ingress controller on the Kubernetes platform in order to fulfill the configurations defined by the ingress object.
+
+Here at Red Hat, we saw the need for enabling external access to services before the introduction of ingress objects in Kubernetes, and created a concept called Route for the same purpose (with additional capabilities such as splitting traffic between multiple backends, sticky sessions, etc). Red Hat is one of the top contributors to the Kubernetes community and contributed the design principles behind Routes to the community which heavily influenced the Ingress design.
+
+When a Route object is created on OpenShift, it gets picked up by the built-in HAProxy load balancer in order to expose the requested service and make it externally available with the given configuration. It’s worth mentioning that although OpenShift provides this HAProxy-based built-in load-balancer, it has a pluggable architecture that allows admins to replace it with NGINX (and NGINX Plus) or external load-balancers like F5 BIG-IP.              
